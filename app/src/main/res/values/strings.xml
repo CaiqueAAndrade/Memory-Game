@@ -1,9 +1,12 @@
 <resources>
     <string name="app_name">HOMER Memory Game</string>
 
-    <string name="lobby_screen_title">Memory Game</string>
+    <string name="header_title">Memory Game</string>
     <string name="lobby_game_mode_button_three_by_four">Game mode 3x4</string>
     <string name="lobby_game_mode_button_five_by_two">Game mode 5x2</string>
     <string name="lobby_game_mode_button_four_by_four">Game mode 4x4</string>
     <string name="lobby_game_mode_button_four_by_five">Game mode 4x5</string>
+
+    <string name="memory_game_go_back_button_content_description">Go back</string>
+    <string name="memory_game_card_content_description">Memory game card</string>
 </resources>
