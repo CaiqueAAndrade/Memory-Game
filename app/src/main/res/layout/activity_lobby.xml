@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white">
+
+        <TextView
+            android:id="@+id/tv_lobby_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="@string/lobby_screen_title"
+            android:textColor="@android:color/holo_green_dark"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/ll_game_options"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_lobby_title">
+
+            <Button
+                android:id="@+id/bt_three_by_four"
+                style="@style/GameModeButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="@string/lobby_game_mode_button_three_by_four" />
+
+            <Button
+                android:id="@+id/bt_five_by_two"
+                style="@style/GameModeButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="@string/lobby_game_mode_button_five_by_two" />
+
+            <Button
+                android:id="@+id/bt_four_by_four"
+                style="@style/GameModeButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="@string/lobby_game_mode_button_four_by_four" />
+
+            <Button
+                android:id="@+id/bt_four_by_five"
+                style="@style/GameModeButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="@string/lobby_game_mode_button_four_by_five" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
