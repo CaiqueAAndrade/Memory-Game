@@ -11,15 +11,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.GridLayoutManager
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.homermemorygame.R
 import com.homermemorygame.databinding.ActivityMemoryGameBinding
 import com.homermemorygame.model.GameMode
 import com.homermemorygame.model.MemoryGameCard
-import com.homermemorygame.util.Utils
+import com.homermemorygame.ui.viewmodel.MemoryGameViewModel
+import com.homermemorygame.util.EventObserver
+import com.homermemorygame.util.ItemOffsetDecoration
+import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import java.util.*
 import kotlin.concurrent.schedule
+
 
 class MemoryGameActivity : AppCompatActivity(),
     MemoryGameCardRecyclerViewAdapter.MemoryGameCardOnClickListener {
@@ -36,43 +39,63 @@ class MemoryGameActivity : AppCompatActivity(),
 
     private lateinit var binding: ActivityMemoryGameBinding
     private lateinit var gameMode: GameMode
-    private lateinit var memoryGameCards: List<MemoryGameCard>
     private val adapter = MemoryGameCardRecyclerViewAdapter(this, this)
-    private var cardSelected: Int = 0
-    private val completeList: ArrayList<MemoryGameCard> = arrayListOf()
+    private val viewModel by viewModel<MemoryGameViewModel> {
+        parametersOf()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_memory_game)
 
+        intent?.extras?.let {
+            gameMode = it.getParcelable(GAME_MODE_KEY) ?: GameMode.THREE_BY_FOUR
+        }
+
+        viewModel.getCardsList(gameMode)
+        subscribe()
+        setupView()
+    }
+
+    private fun setupView() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val wic = WindowInsetsControllerCompat(window, window.decorView)
             wic.isAppearanceLightStatusBars = true
             window.statusBarColor = Color.WHITE
         }
 
-        intent?.extras?.let {
-            gameMode = it.getParcelable(GAME_MODE_KEY) ?: GameMode.THREE_BY_FOUR
-        }
-
         binding.ibBack.setOnClickListener {
             onBackPressed()
         }
 
-        memoryGameCards = Gson().fromJson(
-            Utils.loadJSONFromAsset(this, "memory_game_cards.json"),
-            object : TypeToken<List<MemoryGameCard>>() {}.type
-        ) ?: listOf()
-
         binding.rvMemoryGame.layoutManager = GridLayoutManager(this, gameMode.horizontal)
+        val itemDecoration = ItemOffsetDecoration(this, R.dimen.item_offset)
+        binding.rvMemoryGame.addItemDecoration(itemDecoration)
+    }
 
-        if (this::memoryGameCards.isInitialized) {
-            completeList.addAll(memoryGameCards)
-            completeList.addAll(memoryGameCards)
-            completeList.shuffle()
-            adapter.setData(completeList)
+    private fun subscribe() {
+        viewModel.cardsListLiveData.observe(this, EventObserver {
+            adapter.setData(it)
             binding.rvMemoryGame.adapter = adapter
-        }
+        })
+        viewModel.isAdapterClickableLiveData.observe(this, EventObserver {
+            adapter.isClickable = it
+        })
+
+        viewModel.gameFinishedLiveData.observe(this, EventObserver {
+            Toast.makeText(this, "You Won", Toast.LENGTH_SHORT).show()
+        })
+        viewModel.updatedCardsListLiveData.observe(this, EventObserver {
+            adapter.setData(it)
+        })
+        viewModel.wrongCardSelectedLiveData.observe(this, EventObserver {
+            Timer().schedule(1000) {
+                runOnUiThread {
+                    adapter.notifyDataSetChanged()
+                    adapter.isClickable = true
+                }
+            }
+        })
     }
 
     override fun onBackPressed() {
@@ -81,31 +104,6 @@ class MemoryGameActivity : AppCompatActivity(),
     }
 
     override fun memoryGameCardClickListener(memoryGameCard: MemoryGameCard) {
-        if (cardSelected == 0) {
-            cardSelected = memoryGameCard.id
-        } else {
-            adapter.isClickable = false
-            if (cardSelected == memoryGameCard.id) {
-                memoryGameCards.map { card ->
-                    if (card.id == cardSelected) {
-                        card.isCardMatch = true
-                    }
-                }
-                if (memoryGameCards.all { card -> card.isCardMatch }) {
-                    Toast.makeText(this, "Ganhou", Toast.LENGTH_SHORT).show()
-                }
-                adapter.setData(completeList)
-                cardSelected = 0
-                adapter.isClickable = true
-            } else {
-                Timer().schedule(2000) {
-                    runOnUiThread {
-                        cardSelected = 0
-                        adapter.notifyDataSetChanged()
-                        adapter.isClickable = true
-                    }
-                }
-            }
-        }
+        viewModel.checkForMatchingCards(memoryGameCard.id)
     }
 }

@@ -3,6 +3,7 @@
     package="com.homermemorygame">
 
     <application
+        android:name=".MemoryGameApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -18,8 +19,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.LobbyActivity"/>
-        <activity android:name=".ui.MemoryGameActivity" />
+        <activity android:name=".ui.LobbyActivity" />
+        <activity android:name=".ui.MemoryGameActivity"
+            android:configChanges="orientation|screenSize" />
     </application>
 
 </manifest>
