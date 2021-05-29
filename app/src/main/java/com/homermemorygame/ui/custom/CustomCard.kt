@@ -3,9 +3,12 @@ package com.homermemorygame.ui.custom
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.homermemorygame.R
+
 
 class CustomCard @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -13,6 +16,8 @@ class CustomCard @JvmOverloads constructor(
 
     private var cardImageVisible: ImageView
     private var cardRealImage: Int = 0
+    private val animFadeOut: Animation = AnimationUtils.loadAnimation(context, R.anim.fadeout)
+    private val animFadeIn: Animation = AnimationUtils.loadAnimation(context, R.anim.fadein)
 
     init {
         LayoutInflater.from(context).inflate(R.layout.custom_card, this, true)
@@ -35,12 +40,27 @@ class CustomCard @JvmOverloads constructor(
     }
 
     fun saveCardRealImage(imageString: String) {
-        cardRealImage = context.resources.getIdentifier(imageString, "drawable", context.packageName)
+        cardRealImage =
+            context.resources.getIdentifier(imageString, "drawable", context.packageName)
     }
 
     fun showCard() {
         if (cardImageVisible.tag != cardRealImage) {
-            cardImageVisible.setImageResource(cardRealImage)
+
+            animFadeOut.reset()
+            cardImageVisible.clearAnimation()
+            cardImageVisible.startAnimation(animFadeOut)
+
+            animFadeOut.setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationStart(arg0: Animation) {}
+                override fun onAnimationRepeat(arg0: Animation) {}
+                override fun onAnimationEnd(arg0: Animation) {
+                    cardImageVisible.setImageResource(cardRealImage)
+                    animFadeIn.reset()
+                    cardImageVisible.clearAnimation()
+                    cardImageVisible.startAnimation(animFadeIn)
+                }
+            })
         }
     }
 

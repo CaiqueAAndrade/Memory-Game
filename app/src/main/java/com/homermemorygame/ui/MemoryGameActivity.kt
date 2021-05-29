@@ -86,10 +86,14 @@ class MemoryGameActivity : AppCompatActivity(),
             Toast.makeText(this, "You Won", Toast.LENGTH_SHORT).show()
         })
         viewModel.updatedCardsListLiveData.observe(this, EventObserver {
-            adapter.setData(it)
+            Timer().schedule(600) {
+                runOnUiThread {
+                    adapter.setData(it)
+                }
+            }
         })
         viewModel.wrongCardSelectedLiveData.observe(this, EventObserver {
-            Timer().schedule(1000) {
+            Timer().schedule(2000) {
                 runOnUiThread {
                     adapter.notifyDataSetChanged()
                     adapter.isClickable = true
