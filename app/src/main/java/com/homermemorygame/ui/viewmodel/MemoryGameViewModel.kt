@@ -42,6 +42,10 @@ class MemoryGameViewModel(
     val wrongCardSelectedLiveData: LiveData<Event<Unit>>
         get() = _wrongCardSelectedMutableLiveData
 
+    private val _shouldStartTimerMutableLiveData = MutableLiveData<Event<Boolean>>()
+    val shouldStartTimerLiveData: LiveData<Event<Boolean>>
+        get() = _shouldStartTimerMutableLiveData
+
     fun getCardsList(gameMode: GameMode) {
         viewModelScope.launch {
             val memoryCards = repository.getMemoryCardsList()
@@ -53,6 +57,12 @@ class MemoryGameViewModel(
             completeList.addAll(subList)
             completeList.shuffle()
             _cardsListMutableLiveData.value = Event(completeList)
+        }
+    }
+
+    fun shouldStartTimer(boolean: Boolean) {
+        if (_shouldStartTimerMutableLiveData.value == null || !boolean) {
+            _shouldStartTimerMutableLiveData.value = Event(boolean)
         }
     }
 

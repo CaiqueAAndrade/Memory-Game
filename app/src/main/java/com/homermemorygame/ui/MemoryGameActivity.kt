@@ -86,6 +86,7 @@ class MemoryGameActivity : AppCompatActivity(),
 
         viewModel.gameFinishedLiveData.observe(this, EventObserver {
             Toast.makeText(this, "You Won", Toast.LENGTH_SHORT).show()
+            viewModel.shouldStartTimer(false)
         })
         viewModel.updatedCardsListLiveData.observe(this, EventObserver {
             setupLottieAnimation()
@@ -101,6 +102,13 @@ class MemoryGameActivity : AppCompatActivity(),
                     adapter.notifyDataSetChanged()
                     adapter.isClickable = true
                 }
+            }
+        })
+        viewModel.shouldStartTimerLiveData.observe(this, EventObserver {
+            if (it) {
+                binding.chGameChronometer.start()
+            } else {
+                binding.chGameChronometer.stop()
             }
         })
     }
@@ -129,5 +137,6 @@ class MemoryGameActivity : AppCompatActivity(),
 
     override fun memoryGameCardClickListener(memoryGameCard: MemoryGameCard, adapterPosition: Int) {
         viewModel.checkForMatchingCards(memoryGameCard.id, adapterPosition)
+        viewModel.shouldStartTimer(true)
     }
 }
