@@ -2,51 +2,61 @@
     {
         "id": 1,
         "name": "Bat",
-        "resource": "card_bat"
+        "resource": "card_bat",
+        "isCardMatch": false
     },
     {
         "id": 2,
         "name": "Cat",
-        "resource": "card_cat"
+        "resource": "card_cat",
+        "isCardMatch": false
     },
     {
         "id": 3,
         "name": "Cow",
-        "resource": "card_cow"
+        "resource": "card_cow",
+        "isCardMatch": false
     },
     {
         "id": 4,
         "name": "Dragon",
-        "resource": "card_dragon"
+        "resource": "card_dragon",
+        "isCardMatch": false
     },
     {
         "id": 5,
         "name": "Garbage Man",
-        "resource": "card_garbage_man"
+        "resource": "card_garbage_man",
+        "isCardMatch": false
     },
     {
         "id": 6,
         "name": "Ghost Dog",
-        "resource": "card_ghost_dog"
+        "resource": "card_ghost_dog",
+        "isCardMatch": false
     },
     {
         "id": 7,
         "name": "Hen",
-        "resource": "card_hen"
+        "resource": "card_hen",
+        "isCardMatch": false
     },
     {
         "id": 8,
         "name": "Horse",
-        "resource": "card_horse"
+        "resource": "card_horse",
+        "isCardMatch": false
     },
     {
         "id": 9,
         "name": "Pig",
-        "resource": "card_pig"
+        "resource": "card_pig",
+        "isCardMatch": false
     },
     {
         "id": 10,
         "name": "Spider",
-        "resource": "card_spider"
+        "resource": "card_spider",
+        "isCardMatch": false
     }
 ]

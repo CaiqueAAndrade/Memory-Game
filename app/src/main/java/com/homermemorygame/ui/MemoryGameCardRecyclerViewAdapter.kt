@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.homermemorygame.R
 import com.homermemorygame.databinding.ItemCustomMemoryGameCardBinding
 import com.homermemorygame.model.MemoryGameCard
+import com.homermemorygame.ui.custom.CustomCard
+
 
 class MemoryGameCardRecyclerViewAdapter(
     val context: Context,
@@ -17,6 +19,7 @@ class MemoryGameCardRecyclerViewAdapter(
     RecyclerView.Adapter<MemoryGameCardRecyclerViewAdapter.MemoryGameCardViewHolder>() {
 
     private var items: ArrayList<MemoryGameCard> = arrayListOf()
+    var isClickable = true
 
     interface MemoryGameCardOnClickListener {
         fun memoryGameCardClickListener(memoryGameCard: MemoryGameCard)
@@ -24,6 +27,7 @@ class MemoryGameCardRecyclerViewAdapter(
 
     fun setData(memoryGameCards: ArrayList<MemoryGameCard>) {
         this.items = memoryGameCards
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(
@@ -59,12 +63,22 @@ class MemoryGameCardRecyclerViewAdapter(
 
         fun bind(item: MemoryGameCard) {
             binding.apply {
-                ivCard.setImageResource(context.resources.getIdentifier(item.resource, "drawable", context.packageName))
+                ivCard.saveCardRealImage(item.resource)
+                if (item.isCardMatch.not()) {
+                    ivCard.revertCardState()
+                } else {
+                    ivCard.setRealCardImage()
+                }
             }
         }
 
         override fun onClick(p0: View?) {
-            listener.memoryGameCardClickListener(items[adapterPosition])
+            if (isClickable) {
+                p0?.let {
+                    (it as CustomCard).showCard()
+                }
+                listener.memoryGameCardClickListener(items[adapterPosition])
+            }
         }
     }
 }
