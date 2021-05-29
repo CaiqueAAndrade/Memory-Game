@@ -9,4 +9,9 @@
 
     <string name="memory_game_go_back_button_content_description">Go back</string>
     <string name="memory_game_card_content_description">Memory game card</string>
+
+    <string name="success_bottom_sheet_close_button_description">Close success message</string>
+    <string name="success_bottom_sheet_winner_title">Winner!</string>
+    <string name="success_bottom_sheet_time_played_description">Congratulations, your time played is %a</string>
+    <string name="success_bottom_sheet_try_again_button_description">Try again</string>
 </resources>

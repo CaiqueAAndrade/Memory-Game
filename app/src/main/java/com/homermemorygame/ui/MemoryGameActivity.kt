@@ -6,20 +6,25 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
+import android.os.SystemClock
 import android.view.View
-import android.widget.Toast
+import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.homermemorygame.R
 import com.homermemorygame.databinding.ActivityMemoryGameBinding
+import com.homermemorygame.millisToMinutes
 import com.homermemorygame.model.GameMode
 import com.homermemorygame.model.MemoryGameCard
 import com.homermemorygame.ui.viewmodel.MemoryGameViewModel
 import com.homermemorygame.util.EventObserver
 import com.homermemorygame.util.ItemOffsetDecoration
+import kotlinx.android.synthetic.main.bottom_sheet_success.*
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import java.util.*
@@ -41,6 +46,8 @@ class MemoryGameActivity : AppCompatActivity(),
 
     private lateinit var binding: ActivityMemoryGameBinding
     private lateinit var gameMode: GameMode
+    private val successMessageBottomSheetDialog by lazy { BottomSheetDialog(this) }
+    private lateinit var successMessageLayout: View
     private val adapter = MemoryGameCardRecyclerViewAdapter(this, this)
     private val viewModel by viewModel<MemoryGameViewModel> {
         parametersOf()
@@ -57,6 +64,7 @@ class MemoryGameActivity : AppCompatActivity(),
         viewModel.getCardsList(gameMode)
         subscribe()
         setupView()
+        setupSuccessBottomSheetDialog()
     }
 
     private fun setupView() {
@@ -85,8 +93,18 @@ class MemoryGameActivity : AppCompatActivity(),
         })
 
         viewModel.gameFinishedLiveData.observe(this, EventObserver {
-            Toast.makeText(this, "You Won", Toast.LENGTH_SHORT).show()
             viewModel.shouldStartTimer(false)
+            Timer().schedule(600) {
+                runOnUiThread {
+                    setLoginBottomSheetState()
+                }
+            }
+            val time = (SystemClock.elapsedRealtime() - binding.chGameChronometer.base).millisToMinutes()
+            successMessageBottomSheetDialog.tv_success_message_description.text =
+                getString(R.string.success_bottom_sheet_time_played_description).replace(
+                    "%a",
+                    time.toString()
+                )
         })
         viewModel.updatedCardsListLiveData.observe(this, EventObserver {
             setupLottieAnimation()
@@ -127,6 +145,34 @@ class MemoryGameActivity : AppCompatActivity(),
                 override fun onAnimationCancel(animation: Animator?) {}
                 override fun onAnimationStart(animation: Animator?) {}
             })
+        }
+    }
+
+    private fun setLoginBottomSheetState() {
+        if (successMessageBottomSheetDialog.isShowing) {
+            successMessageBottomSheetDialog.dismiss()
+        } else {
+            successMessageBottomSheetDialog.show()
+
+            val behavior =
+                BottomSheetBehavior.from(successMessageLayout.parent as FrameLayout)
+            behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+    }
+
+    private fun setupSuccessBottomSheetDialog() {
+        successMessageLayout =
+            layoutInflater.inflate(R.layout.bottom_sheet_success, null)
+        successMessageBottomSheetDialog.apply {
+            this.setContentView(successMessageLayout)
+            ib_success_message_close.setOnClickListener {
+                setLoginBottomSheetState()
+            }
+            bt_success_message_try_again.setOnClickListener {
+                binding.chGameChronometer.base = SystemClock.elapsedRealtime()
+                viewModel.getCardsList(gameMode)
+                setLoginBottomSheetState()
+            }
         }
     }
 

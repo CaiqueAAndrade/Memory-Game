@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@android:color/white">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_success_message"
+            android:layout_width="match_parent"
+            android:layout_height="366dp"
+            app:behavior_hideable="true"
+            app:behavior_peekHeight="0dp"
+            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+            <ImageButton
+                android:id="@+id/ib_success_message_close"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/success_bottom_sheet_close_button_description"
+                android:padding="16dp"
+                android:src="@drawable/ic_exit"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/iv_success_message_trophy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_trophy"
+                app:layout_constraintTop_toBottomOf="@+id/ib_success_message_close"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <TextView
+                android:id="@+id/tv_success_message_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/HeaderTitle"
+                android:layout_marginTop="16dp"
+                android:text="@string/success_bottom_sheet_winner_title"
+                app:layout_constraintTop_toBottomOf="@id/iv_success_message_trophy"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <TextView
+                android:id="@+id/tv_success_message_description"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                style="@style/CustomTimer"
+                android:textAlignment="center"
+                android:text="@string/success_bottom_sheet_time_played_description"
+                app:layout_constraintTop_toBottomOf="@+id/tv_success_message_title"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <Button
+                android:id="@+id/bt_success_message_try_again"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/GameModeButton"
+                android:text="@string/success_bottom_sheet_try_again_button_description"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_success_message_description"
+                android:layout_margin="16dp"
+                app:layout_constraintVertical_bias="0"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+
+</layout>

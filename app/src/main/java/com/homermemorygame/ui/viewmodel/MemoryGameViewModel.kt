@@ -48,6 +48,7 @@ class MemoryGameViewModel(
 
     fun getCardsList(gameMode: GameMode) {
         viewModelScope.launch {
+            completeList.clear()
             val memoryCards = repository.getMemoryCardsList()
             memoryCards.shuffle()
             val subList =
@@ -57,12 +58,13 @@ class MemoryGameViewModel(
             completeList.addAll(subList)
             completeList.shuffle()
             _cardsListMutableLiveData.value = Event(completeList)
+            _shouldStartTimerMutableLiveData.value = null
         }
     }
 
-    fun shouldStartTimer(boolean: Boolean) {
-        if (_shouldStartTimerMutableLiveData.value == null || !boolean) {
-            _shouldStartTimerMutableLiveData.value = Event(boolean)
+    fun shouldStartTimer(startTimer: Boolean) {
+        if (_shouldStartTimerMutableLiveData.value == null || !startTimer) {
+            _shouldStartTimerMutableLiveData.value = Event(startTimer)
         }
     }
 
