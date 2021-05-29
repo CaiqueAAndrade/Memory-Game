@@ -58,4 +58,7 @@ dependencies {
 
     //Koin
     implementation "org.koin:koin-android-viewmodel:2.0.1"
+
+    //Animation
+    implementation "com.airbnb.android:lottie:3.4.0"
 }

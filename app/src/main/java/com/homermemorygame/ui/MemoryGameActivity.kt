@@ -1,13 +1,15 @@
 package com.homermemorygame.ui
 
+import android.animation.Animator
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.GridLayoutManager
@@ -61,7 +63,7 @@ class MemoryGameActivity : AppCompatActivity(),
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val wic = WindowInsetsControllerCompat(window, window.decorView)
             wic.isAppearanceLightStatusBars = true
-            window.statusBarColor = Color.WHITE
+            window.statusBarColor = ContextCompat.getColor(this, R.color.background_green)
         }
 
         binding.ibBack.setOnClickListener {
@@ -86,6 +88,7 @@ class MemoryGameActivity : AppCompatActivity(),
             Toast.makeText(this, "You Won", Toast.LENGTH_SHORT).show()
         })
         viewModel.updatedCardsListLiveData.observe(this, EventObserver {
+            setupLottieAnimation()
             Timer().schedule(600) {
                 runOnUiThread {
                     adapter.setData(it)
@@ -102,12 +105,29 @@ class MemoryGameActivity : AppCompatActivity(),
         })
     }
 
+    private fun setupLottieAnimation() {
+        binding.apply {
+            lavSuccessAnimation.visibility = View.VISIBLE
+            lavSuccessAnimation.playAnimation()
+            lavSuccessAnimation.addAnimatorListener(object : Animator.AnimatorListener {
+                override fun onAnimationRepeat(animation: Animator?) {}
+                override fun onAnimationEnd(animation: Animator?) {
+                    lavSuccessAnimation.visibility = View.GONE
+                    tvMemoryGameTitle.visibility = View.VISIBLE
+                }
+
+                override fun onAnimationCancel(animation: Animator?) {}
+                override fun onAnimationStart(animation: Animator?) {}
+            })
+        }
+    }
+
     override fun onBackPressed() {
         super.onBackPressed()
         finish()
     }
 
-    override fun memoryGameCardClickListener(memoryGameCard: MemoryGameCard) {
-        viewModel.checkForMatchingCards(memoryGameCard.id)
+    override fun memoryGameCardClickListener(memoryGameCard: MemoryGameCard, adapterPosition: Int) {
+        viewModel.checkForMatchingCards(memoryGameCard.id, adapterPosition)
     }
 }

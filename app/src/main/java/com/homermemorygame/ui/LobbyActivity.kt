@@ -1,9 +1,9 @@
 package com.homermemorygame.ui
 
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.databinding.DataBindingUtil
 import com.homermemorygame.R
@@ -22,7 +22,7 @@ class LobbyActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val wic = WindowInsetsControllerCompat(window, window.decorView)
             wic.isAppearanceLightStatusBars = true
-            window.statusBarColor = Color.WHITE
+            window.statusBarColor = ContextCompat.getColor(this, R.color.background_green)
         }
 
         setOnClickListeners()

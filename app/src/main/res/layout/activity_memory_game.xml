@@ -6,7 +6,19 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/white">
+        android:background="@color/background_green">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lav_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:elevation="0dp"
+            android:scaleType="centerCrop"
+            app:lottie_autoPlay="true"
+            app:lottie_speed="0.5"
+            app:lottie_loop="true"
+
+            app:lottie_fileName="background_animation.json" />
 
         <TextView
             android:id="@+id/tv_memory_game_title"
@@ -14,9 +26,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:text="@string/header_title"
-            android:textColor="@android:color/holo_green_dark"
+            android:textColor="@color/blue"
             android:textSize="24sp"
             android:textStyle="bold"
+            android:shadowColor="@color/black"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -58,5 +74,18 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lav_success_animation"
+            style="@style/LightMode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:lottie_fileName="success_animation.json"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_memory_game_title"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_memory_game_title"
+            app:lottie_speed="1.8" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

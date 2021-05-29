@@ -18,6 +18,7 @@ class MemoryGameViewModel(
 
     private val completeList: ArrayList<MemoryGameCard> = arrayListOf()
     private var cardSelected: Int = 0
+    private var lastAdapterPosition: Int? = null
 
 
     private val _cardsListMutableLiveData = MutableLiveData<Event<ArrayList<MemoryGameCard>>>()
@@ -55,7 +56,12 @@ class MemoryGameViewModel(
         }
     }
 
-    fun checkForMatchingCards(cardId: Int) {
+    fun checkForMatchingCards(cardId: Int, adapterPosition: Int) {
+        if (lastAdapterPosition != adapterPosition) {
+            lastAdapterPosition = adapterPosition
+        } else {
+            return
+        }
         if (cardSelected == 0) {
             cardSelected = cardId
         } else {

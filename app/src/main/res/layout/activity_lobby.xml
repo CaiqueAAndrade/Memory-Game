@@ -5,7 +5,18 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/white">
+        android:background="@color/background_green">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lav_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:elevation="0dp"
+            android:scaleType="centerCrop"
+            app:lottie_autoPlay="true"
+            app:lottie_speed="0.5"
+            app:lottie_loop="true"
+            app:lottie_fileName="background_animation.json" />
 
         <TextView
             android:id="@+id/tv_lobby_title"
@@ -13,9 +24,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:text="@string/header_title"
-            android:textColor="@android:color/holo_green_dark"
+            android:textColor="@color/blue"
             android:textSize="24sp"
             android:textStyle="bold"
+            android:shadowColor="@color/black"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

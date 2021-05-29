@@ -22,7 +22,7 @@ class MemoryGameCardRecyclerViewAdapter(
     var isClickable = true
 
     interface MemoryGameCardOnClickListener {
-        fun memoryGameCardClickListener(memoryGameCard: MemoryGameCard)
+        fun memoryGameCardClickListener(memoryGameCard: MemoryGameCard, adapterPosition: Int)
     }
 
     fun setData(memoryGameCards: ArrayList<MemoryGameCard>) {
@@ -77,7 +77,7 @@ class MemoryGameCardRecyclerViewAdapter(
                 p0?.let {
                     (it as CustomCard).showCard()
                 }
-                listener.memoryGameCardClickListener(items[adapterPosition])
+                listener.memoryGameCardClickListener(items[adapterPosition], adapterPosition)
             }
         }
     }

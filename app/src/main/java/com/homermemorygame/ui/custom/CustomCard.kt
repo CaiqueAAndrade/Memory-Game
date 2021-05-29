@@ -45,8 +45,7 @@ class CustomCard @JvmOverloads constructor(
     }
 
     fun showCard() {
-        if (cardImageVisible.tag != cardRealImage) {
-
+        if (cardImageVisible.tag == R.drawable.card_back) {
             animFadeOut.reset()
             cardImageVisible.clearAnimation()
             cardImageVisible.startAnimation(animFadeOut)
@@ -55,6 +54,7 @@ class CustomCard @JvmOverloads constructor(
                 override fun onAnimationStart(arg0: Animation) {}
                 override fun onAnimationRepeat(arg0: Animation) {}
                 override fun onAnimationEnd(arg0: Animation) {
+                    cardImageVisible.tag = cardRealImage
                     cardImageVisible.setImageResource(cardRealImage)
                     animFadeIn.reset()
                     cardImageVisible.clearAnimation()
@@ -65,10 +65,12 @@ class CustomCard @JvmOverloads constructor(
     }
 
     fun setRealCardImage() {
+        cardImageVisible.tag = cardRealImage
         cardImageVisible.setImageResource(cardRealImage)
     }
 
     fun revertCardState() {
+        cardImageVisible.tag = R.drawable.card_back
         cardImageVisible.setImageResource(R.drawable.card_back)
     }
 
