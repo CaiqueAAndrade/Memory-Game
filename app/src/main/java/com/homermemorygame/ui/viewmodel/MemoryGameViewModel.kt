@@ -17,7 +17,7 @@ class MemoryGameViewModel(
 ) : AndroidViewModel(mApplication) {
 
     private val completeList: ArrayList<MemoryGameCard> = arrayListOf()
-    private var cardSelected: Int = 0
+    private var cardSelected: Int? = null
     private var lastAdapterPosition: Int? = null
 
 
@@ -48,6 +48,7 @@ class MemoryGameViewModel(
 
     fun getCardsList(gameMode: GameMode) {
         viewModelScope.launch {
+            cardSelected = null
             completeList.clear()
             val memoryCards = repository.getMemoryCardsList()
             memoryCards.shuffle()
@@ -68,32 +69,41 @@ class MemoryGameViewModel(
         }
     }
 
-    fun checkForMatchingCards(cardId: Int, adapterPosition: Int) {
-        if (lastAdapterPosition != adapterPosition) {
-            lastAdapterPosition = adapterPosition
+    fun checkForMatchingCards(memoryGameCard: MemoryGameCard, adapterPosition: Int) {
+        if (!memoryGameCard.isCardMatch) {
+            if (lastAdapterPosition != adapterPosition) {
+                lastAdapterPosition = adapterPosition
+            } else {
+                return
+            }
+
+            if (cardSelected == null) {
+                cardSelected = memoryGameCard.id
+            } else {
+                _isAdapterClickableMutableLiveData.value = Event(false)
+                if (cardSelected == memoryGameCard.id) {
+                    completeList.map { card ->
+                        if (card.id == cardSelected) {
+                            card.isCardMatch = true
+                        }
+                    }
+
+                    if (completeList.all { card -> card.isCardMatch }) {
+                        _gameFinishedMutableLiveData.value = Event(Unit)
+                    }
+
+                    _updatedCardsListMutableLiveData.value = Event(completeList)
+                    cardSelected = null
+                    lastAdapterPosition = null
+                    _isAdapterClickableMutableLiveData.value = Event(true)
+                } else {
+                    cardSelected = null
+                    lastAdapterPosition = null
+                    _wrongCardSelectedMutableLiveData.value = Event(Unit)
+                }
+            }
         } else {
             return
-        }
-        if (cardSelected == 0) {
-            cardSelected = cardId
-        } else {
-            _isAdapterClickableMutableLiveData.value = Event(false)
-            if (cardSelected == cardId) {
-                completeList.map { card ->
-                    if (card.id == cardSelected) {
-                        card.isCardMatch = true
-                    }
-                }
-                if (completeList.all { card -> card.isCardMatch }) {
-                    _gameFinishedMutableLiveData.value = Event(Unit)
-                }
-                _updatedCardsListMutableLiveData.value = Event(completeList)
-                cardSelected = 0
-                _isAdapterClickableMutableLiveData.value = Event(true)
-            } else {
-                cardSelected = 0
-                _wrongCardSelectedMutableLiveData.value = Event(Unit)
-            }
         }
     }
 }

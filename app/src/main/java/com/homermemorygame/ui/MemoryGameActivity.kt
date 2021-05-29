@@ -7,6 +7,8 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import android.os.SystemClock
+import android.speech.tts.TextToSpeech
+import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
@@ -32,7 +34,8 @@ import kotlin.concurrent.schedule
 
 
 class MemoryGameActivity : AppCompatActivity(),
-    MemoryGameCardRecyclerViewAdapter.MemoryGameCardOnClickListener {
+    MemoryGameCardRecyclerViewAdapter.MemoryGameCardOnClickListener,
+    TextToSpeech.OnInitListener{
 
     companion object {
         private const val GAME_MODE_KEY = "game_mode_key"
@@ -49,6 +52,8 @@ class MemoryGameActivity : AppCompatActivity(),
     private val successMessageBottomSheetDialog by lazy { BottomSheetDialog(this) }
     private lateinit var successMessageLayout: View
     private val adapter = MemoryGameCardRecyclerViewAdapter(this, this)
+    private var tts: TextToSpeech? = null
+    private var isTTsEnable = false
     private val viewModel by viewModel<MemoryGameViewModel> {
         parametersOf()
     }
@@ -61,10 +66,16 @@ class MemoryGameActivity : AppCompatActivity(),
             gameMode = it.getParcelable(GAME_MODE_KEY) ?: GameMode.THREE_BY_FOUR
         }
 
+        tts = TextToSpeech(this, this)
         viewModel.getCardsList(gameMode)
         subscribe()
         setupView()
         setupSuccessBottomSheetDialog()
+        Timer().schedule(1000) {
+            runOnUiThread {
+                speakOut(getString(R.string.memory_game_speak_match_cards_description))
+            }
+        }
     }
 
     private fun setupView() {
@@ -94,16 +105,17 @@ class MemoryGameActivity : AppCompatActivity(),
 
         viewModel.gameFinishedLiveData.observe(this, EventObserver {
             viewModel.shouldStartTimer(false)
-            Timer().schedule(600) {
+            Timer().schedule(1000) {
                 runOnUiThread {
                     setLoginBottomSheetState()
+                    speakOut(getString(R.string.memory_game_speak_game_completed_description))
                 }
             }
             val time = (SystemClock.elapsedRealtime() - binding.chGameChronometer.base).millisToMinutes()
             successMessageBottomSheetDialog.tv_success_message_description.text =
                 getString(R.string.success_bottom_sheet_time_played_description).replace(
                     "%a",
-                    time.toString()
+                    time
                 )
         })
         viewModel.updatedCardsListLiveData.observe(this, EventObserver {
@@ -111,6 +123,7 @@ class MemoryGameActivity : AppCompatActivity(),
             Timer().schedule(600) {
                 runOnUiThread {
                     adapter.setData(it)
+                    speakOut(getString(R.string.memory_game_speak_match_successful_description))
                 }
             }
         })
@@ -119,6 +132,7 @@ class MemoryGameActivity : AppCompatActivity(),
                 runOnUiThread {
                     adapter.notifyDataSetChanged()
                     adapter.isClickable = true
+                    speakOut(getString(R.string.memory_game_speak_wrong_match_description))
                 }
             }
         })
@@ -176,13 +190,44 @@ class MemoryGameActivity : AppCompatActivity(),
         }
     }
 
+    override fun memoryGameCardClickListener(memoryGameCard: MemoryGameCard, adapterPosition: Int) {
+        viewModel.checkForMatchingCards(memoryGameCard, adapterPosition)
+        viewModel.shouldStartTimer(true)
+        speakOut(memoryGameCard.name)
+    }
+
+    private fun speakOut(textToSpeech: String) {
+        if (isTTsEnable) {
+            tts?.speak(textToSpeech, TextToSpeech.QUEUE_FLUSH, null, "")
+        }
+    }
+
+    override fun onInit(p0: Int) {
+        if (p0 == TextToSpeech.SUCCESS) {
+            tts?.let {
+                val result = it.setLanguage(Locale.US)
+
+                if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    Log.e("TTS", "The Language specified is not supported!")
+                } else {
+                    isTTsEnable = true
+                }
+            }
+        } else {
+            Log.e("TTS", "Initialization Failed!")
+        }
+    }
+
     override fun onBackPressed() {
         super.onBackPressed()
         finish()
     }
 
-    override fun memoryGameCardClickListener(memoryGameCard: MemoryGameCard, adapterPosition: Int) {
-        viewModel.checkForMatchingCards(memoryGameCard.id, adapterPosition)
-        viewModel.shouldStartTimer(true)
+    override fun onDestroy() {
+        tts?.let {
+            it.stop()
+            it.shutdown()
+        }
+        super.onDestroy()
     }
 }

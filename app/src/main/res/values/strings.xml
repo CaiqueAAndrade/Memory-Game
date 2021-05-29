@@ -2,6 +2,7 @@
     <string name="app_name">HOMER Memory Game</string>
 
     <string name="header_title">Memory Game</string>
+    <string name="lobby_speak_select_game_mode">Welcome to the memory game. Select a game mode</string>
     <string name="lobby_game_mode_button_three_by_four">Game mode 3x4</string>
     <string name="lobby_game_mode_button_five_by_two">Game mode 5x2</string>
     <string name="lobby_game_mode_button_four_by_four">Game mode 4x4</string>
@@ -9,6 +10,10 @@
 
     <string name="memory_game_go_back_button_content_description">Go back</string>
     <string name="memory_game_card_content_description">Memory game card</string>
+    <string name="memory_game_speak_match_cards_description">Lets start. Match two cards together</string>
+    <string name="memory_game_speak_match_successful_description">Match</string>
+    <string name="memory_game_speak_wrong_match_description">Wrong</string>
+    <string name="memory_game_speak_game_completed_description">You did it, congratulations</string>
 
     <string name="success_bottom_sheet_close_button_description">Close success message</string>
     <string name="success_bottom_sheet_winner_title">Winner!</string>
