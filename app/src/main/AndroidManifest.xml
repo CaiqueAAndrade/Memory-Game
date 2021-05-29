@@ -19,6 +19,7 @@
         </activity>
 
         <activity android:name=".ui.LobbyActivity"/>
+        <activity android:name=".ui.MemoryGameActivity" />
     </application>
 
 </manifest>

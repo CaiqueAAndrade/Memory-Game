@@ -1,0 +1,52 @@
+[
+    {
+        "id": 1,
+        "name": "Bat",
+        "resource": "card_bat"
+    },
+    {
+        "id": 2,
+        "name": "Cat",
+        "resource": "card_cat"
+    },
+    {
+        "id": 3,
+        "name": "Cow",
+        "resource": "card_cow"
+    },
+    {
+        "id": 4,
+        "name": "Dragon",
+        "resource": "card_dragon"
+    },
+    {
+        "id": 5,
+        "name": "Garbage Man",
+        "resource": "card_garbage_man"
+    },
+    {
+        "id": 6,
+        "name": "Ghost Dog",
+        "resource": "card_ghost_dog"
+    },
+    {
+        "id": 7,
+        "name": "Hen",
+        "resource": "card_hen"
+    },
+    {
+        "id": 8,
+        "name": "Horse",
+        "resource": "card_horse"
+    },
+    {
+        "id": 9,
+        "name": "Pig",
+        "resource": "card_pig"
+    },
+    {
+        "id": 10,
+        "name": "Spider",
+        "resource": "card_spider"
+    }
+]
