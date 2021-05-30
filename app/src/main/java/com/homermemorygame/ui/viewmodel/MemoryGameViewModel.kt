@@ -39,13 +39,17 @@ class MemoryGameViewModel(
     val gameFinishedLiveData: LiveData<Event<Unit>>
         get() = _gameFinishedMutableLiveData
 
-    private val _wrongCardSelectedMutableLiveData = MutableLiveData<Event<Unit>>()
-    val wrongCardSelectedLiveData: LiveData<Event<Unit>>
+    private val _wrongCardSelectedMutableLiveData = MutableLiveData<Event<Pair<Int, Int>>>()
+    val wrongCardSelectedLiveData: LiveData<Event<Pair<Int, Int>>>
         get() = _wrongCardSelectedMutableLiveData
 
     private val _shouldStartTimerMutableLiveData = MutableLiveData<Event<Boolean>>()
     val shouldStartTimerLiveData: LiveData<Event<Boolean>>
         get() = _shouldStartTimerMutableLiveData
+
+    private val _speakCardNameMutableLiveData = MutableLiveData<Event<String>>()
+    val speakCardNameLiveData: LiveData<Event<String>>
+        get() = _speakCardNameMutableLiveData
 
     fun getCardsList(gameMode: GameMode) {
         viewModelScope.launch {
@@ -72,6 +76,9 @@ class MemoryGameViewModel(
 
     fun checkForMatchingCards(memoryGameCard: MemoryGameCard, adapterPosition: Int) {
         if (!memoryGameCard.isCardMatch) {
+            _speakCardNameMutableLiveData.value = Event(memoryGameCard.name)
+            val lastAdapterPositionForAnimation = lastAdapterPosition
+
             if (checkAdapterPosition(adapterPosition)) {
                 return
             }
@@ -85,18 +92,23 @@ class MemoryGameViewModel(
                     checkGameStatus()
 
                     _updatedCardsListMutableLiveData.value = Event(completeList)
-                    cardSelected = null
-                    lastAdapterPosition = null
+                    resetCardVerification()
                     _isAdapterClickableMutableLiveData.value = Event(true)
                 } else {
-                    cardSelected = null
-                    lastAdapterPosition = null
-                    _wrongCardSelectedMutableLiveData.value = Event(Unit)
+                    lastAdapterPositionForAnimation?.let {
+                        _wrongCardSelectedMutableLiveData.value = Event(Pair(adapterPosition, it))
+                    }
+                    resetCardVerification()
                 }
             }
         } else {
             return
         }
+    }
+
+    private fun resetCardVerification() {
+        cardSelected = null
+        lastAdapterPosition = null
     }
 
     private fun checkGameStatus() {

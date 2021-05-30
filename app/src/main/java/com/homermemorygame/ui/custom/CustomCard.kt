@@ -73,4 +73,19 @@ class CustomCard @JvmOverloads constructor(
         cardImageVisible.setImageResource(R.drawable.card_back)
     }
 
+    fun revertCardStateWithAnimation() {
+        val objectAnimator1 = ObjectAnimator.ofFloat(cardImageVisible, "scaleX", 1f, 0f)
+        val objectAnimator2 = ObjectAnimator.ofFloat(cardImageVisible, "scaleX", 0f, 1f)
+        objectAnimator1.interpolator = DecelerateInterpolator()
+        objectAnimator2.interpolator = AccelerateDecelerateInterpolator()
+        objectAnimator1.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                super.onAnimationEnd(animation)
+                cardImageVisible.tag = R.drawable.card_back
+                cardImageVisible.setImageResource(R.drawable.card_back)
+                objectAnimator2.start()
+            }
+        })
+        objectAnimator1.start()
+    }
 }

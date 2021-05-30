@@ -19,6 +19,7 @@ class MemoryGameCardRecyclerViewAdapter(
     RecyclerView.Adapter<MemoryGameCardRecyclerViewAdapter.MemoryGameCardViewHolder>() {
 
     private var items: ArrayList<MemoryGameCard> = arrayListOf()
+    private var cards: Pair<Int?, Int?> = Pair(null, null)
     var isClickable = true
 
     interface MemoryGameCardOnClickListener {
@@ -27,6 +28,11 @@ class MemoryGameCardRecyclerViewAdapter(
 
     fun setData(memoryGameCards: ArrayList<MemoryGameCard>) {
         this.items = memoryGameCards
+        notifyDataSetChanged()
+    }
+
+    fun revertNotMatchCards(cards: Pair<Int, Int>){
+        this.cards = cards
         notifyDataSetChanged()
     }
 
@@ -65,7 +71,19 @@ class MemoryGameCardRecyclerViewAdapter(
             binding.apply {
                 ivCard.saveCardRealImage(item.resource)
                 if (item.isCardMatch.not()) {
-                    ivCard.revertCardState()
+                    when (adapterPosition) {
+                        cards.first -> {
+                            ivCard.revertCardStateWithAnimation()
+                            cards = Pair(null, cards.second)
+                        }
+                        cards.second -> {
+                            ivCard.revertCardStateWithAnimation()
+                            cards = Pair(cards.first, null)
+                        }
+                        else -> {
+                            ivCard.revertCardState()
+                        }
+                    }
                 } else {
                     ivCard.setRealCardImage()
                 }

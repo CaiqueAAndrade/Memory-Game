@@ -131,7 +131,7 @@ class MemoryGameActivity : AppCompatActivity(),
         viewModel.wrongCardSelectedLiveData.observe(this, EventObserver {
             Timer().schedule(2000) {
                 runOnUiThread {
-                    adapter.notifyDataSetChanged()
+                    adapter.revertNotMatchCards(it)
                     adapter.isClickable = true
                     speakOut(getString(R.string.memory_game_speak_wrong_match_description))
                 }
@@ -143,6 +143,9 @@ class MemoryGameActivity : AppCompatActivity(),
             } else {
                 binding.chGameChronometer.stop()
             }
+        })
+        viewModel.speakCardNameLiveData.observe(this, EventObserver {
+            speakOut(it)
         })
     }
 
@@ -194,7 +197,6 @@ class MemoryGameActivity : AppCompatActivity(),
     override fun memoryGameCardClickListener(memoryGameCard: MemoryGameCard, adapterPosition: Int) {
         viewModel.checkForMatchingCards(memoryGameCard, adapterPosition)
         viewModel.shouldStartTimer(true)
-        speakOut(memoryGameCard.name)
     }
 
     private fun speakOut(textToSpeech: String) {
