@@ -53,12 +53,15 @@ class MemoryGameViewModel(
 
     fun getCardsList(gameMode: GameMode) {
         viewModelScope.launch {
-            cardSelected = null
+            resetCardVerification()
             completeList.clear()
             val memoryCards = repository.getMemoryCardsList()
             memoryCards.shuffle()
             val subList =
-                memoryCards.subList(0,Utils.calculateGameModeSize(gameMode.horizontal, gameMode.vertical))
+                memoryCards.subList(
+                    0,
+                    Utils.calculateGameModeSize(gameMode.horizontal, gameMode.vertical)
+                )
                     .toTypedArray()
             completeList.addAll(subList)
             completeList.addAll(subList)
