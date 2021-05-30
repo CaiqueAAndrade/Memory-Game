@@ -30,4 +30,8 @@ object Utils {
 
         return json
     }
+
+    fun calculateGameModeSize(horizontal: Int, vertical: Int): Int {
+        return (horizontal * vertical) / 2
+    }
 }

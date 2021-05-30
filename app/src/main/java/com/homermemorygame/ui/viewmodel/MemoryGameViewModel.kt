@@ -9,6 +9,7 @@ import com.homermemorygame.model.GameMode
 import com.homermemorygame.model.MemoryGameCard
 import com.homermemorygame.repository.MemoryGameRepository
 import com.homermemorygame.util.Event
+import com.homermemorygame.util.Utils
 import kotlinx.coroutines.launch
 
 class MemoryGameViewModel(
@@ -53,7 +54,7 @@ class MemoryGameViewModel(
             val memoryCards = repository.getMemoryCardsList()
             memoryCards.shuffle()
             val subList =
-                memoryCards.subList(0, ((gameMode.horizontal * gameMode.vertical) / 2))
+                memoryCards.subList(0,Utils.calculateGameModeSize(gameMode.horizontal, gameMode.vertical))
                     .toTypedArray()
             completeList.addAll(subList)
             completeList.addAll(subList)
@@ -71,9 +72,7 @@ class MemoryGameViewModel(
 
     fun checkForMatchingCards(memoryGameCard: MemoryGameCard, adapterPosition: Int) {
         if (!memoryGameCard.isCardMatch) {
-            if (lastAdapterPosition != adapterPosition) {
-                lastAdapterPosition = adapterPosition
-            } else {
+            if (checkAdapterPosition(adapterPosition)) {
                 return
             }
 
@@ -82,15 +81,8 @@ class MemoryGameViewModel(
             } else {
                 _isAdapterClickableMutableLiveData.value = Event(false)
                 if (cardSelected == memoryGameCard.id) {
-                    completeList.map { card ->
-                        if (card.id == cardSelected) {
-                            card.isCardMatch = true
-                        }
-                    }
-
-                    if (completeList.all { card -> card.isCardMatch }) {
-                        _gameFinishedMutableLiveData.value = Event(Unit)
-                    }
+                    updateCompleteList()
+                    checkGameStatus()
 
                     _updatedCardsListMutableLiveData.value = Event(completeList)
                     cardSelected = null
@@ -105,5 +97,28 @@ class MemoryGameViewModel(
         } else {
             return
         }
+    }
+
+    private fun checkGameStatus() {
+        if (completeList.all { card -> card.isCardMatch }) {
+            _gameFinishedMutableLiveData.value = Event(Unit)
+        }
+    }
+
+    private fun updateCompleteList() {
+        completeList.map { card ->
+            if (card.id == cardSelected) {
+                card.isCardMatch = true
+            }
+        }
+    }
+
+    private fun checkAdapterPosition(adapterPosition: Int): Boolean {
+        if (lastAdapterPosition != adapterPosition) {
+            lastAdapterPosition = adapterPosition
+        } else {
+            return true
+        }
+        return false
     }
 }

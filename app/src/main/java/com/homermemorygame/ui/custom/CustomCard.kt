@@ -1,10 +1,13 @@
 package com.homermemorygame.ui.custom
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.homermemorygame.R
@@ -16,8 +19,6 @@ class CustomCard @JvmOverloads constructor(
 
     private var cardImageVisible: ImageView
     private var cardRealImage: Int = 0
-    private val animFadeOut: Animation = AnimationUtils.loadAnimation(context, R.anim.fadeout)
-    private val animFadeIn: Animation = AnimationUtils.loadAnimation(context, R.anim.fadein)
 
     init {
         LayoutInflater.from(context).inflate(R.layout.custom_card, this, true)
@@ -46,21 +47,19 @@ class CustomCard @JvmOverloads constructor(
 
     fun showCard() {
         if (cardImageVisible.tag == R.drawable.card_back) {
-            animFadeOut.reset()
-            cardImageVisible.clearAnimation()
-            cardImageVisible.startAnimation(animFadeOut)
-
-            animFadeOut.setAnimationListener(object : Animation.AnimationListener {
-                override fun onAnimationStart(arg0: Animation) {}
-                override fun onAnimationRepeat(arg0: Animation) {}
-                override fun onAnimationEnd(arg0: Animation) {
+            val objectAnimator1 = ObjectAnimator.ofFloat(cardImageVisible, "scaleX", 1f, 0f)
+            val objectAnimator2 = ObjectAnimator.ofFloat(cardImageVisible, "scaleX", 0f, 1f)
+            objectAnimator1.interpolator = DecelerateInterpolator()
+            objectAnimator2.interpolator = AccelerateDecelerateInterpolator()
+            objectAnimator1.addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    super.onAnimationEnd(animation)
                     cardImageVisible.tag = cardRealImage
                     cardImageVisible.setImageResource(cardRealImage)
-                    animFadeIn.reset()
-                    cardImageVisible.clearAnimation()
-                    cardImageVisible.startAnimation(animFadeIn)
+                    objectAnimator2.start()
                 }
             })
+            objectAnimator1.start()
         }
     }
 

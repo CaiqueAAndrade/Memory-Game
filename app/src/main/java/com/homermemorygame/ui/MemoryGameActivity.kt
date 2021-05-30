@@ -20,7 +20,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.homermemorygame.R
 import com.homermemorygame.databinding.ActivityMemoryGameBinding
-import com.homermemorygame.millisToMinutes
+import com.homermemorygame.extensions.millisToMinutes
 import com.homermemorygame.model.GameMode
 import com.homermemorygame.model.MemoryGameCard
 import com.homermemorygame.ui.viewmodel.MemoryGameViewModel
@@ -35,7 +35,7 @@ import kotlin.concurrent.schedule
 
 class MemoryGameActivity : AppCompatActivity(),
     MemoryGameCardRecyclerViewAdapter.MemoryGameCardOnClickListener,
-    TextToSpeech.OnInitListener{
+    TextToSpeech.OnInitListener {
 
     companion object {
         private const val GAME_MODE_KEY = "game_mode_key"
@@ -111,7 +111,8 @@ class MemoryGameActivity : AppCompatActivity(),
                     speakOut(getString(R.string.memory_game_speak_game_completed_description))
                 }
             }
-            val time = (SystemClock.elapsedRealtime() - binding.chGameChronometer.base).millisToMinutes()
+            val time =
+                (SystemClock.elapsedRealtime() - binding.chGameChronometer.base).millisToMinutes()
             successMessageBottomSheetDialog.tv_success_message_description.text =
                 getString(R.string.success_bottom_sheet_time_played_description).replace(
                     "%a",

@@ -1,4 +1,4 @@
-package com.homermemorygame
+package com.homermemorygame.extensions
 
 import android.annotation.SuppressLint
 import java.text.SimpleDateFormat
